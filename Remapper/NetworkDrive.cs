@@ -4,8 +4,16 @@ namespace Remapper
 {
     class NetworkDrive
     {
-        private string _driveLetter, _server, _originalServer, _serverPath, _fullPath, _originalPath;
+        private string _driveLetter, _server, _originalServer, _originalFullPath, _originalPath;
 
+        public NetworkDrive(string s, string path)
+        {
+            this.DriveLetter = s;
+            this.OriginalFullPath = path;
+        }
+        /// <summary>
+        /// The local drive letter.
+        /// </summary>
         public string DriveLetter
         {
             get
@@ -18,6 +26,9 @@ namespace Remapper
             }
         }
 
+        /// <summary>
+        /// The normalized name of the server (looked up via the ServerMappings.txt file).
+        /// </summary>
         public string Server
         {
             get
@@ -26,6 +37,9 @@ namespace Remapper
             }
         }
 
+        /// <summary>
+        /// The server name the share originally pointed to.
+        /// </summary>
         public string OriginalServer
         {
             get
@@ -34,30 +48,9 @@ namespace Remapper
             }
         }
 
-        public string ServerPath
-        {
-            get
-            {
-                return _serverPath;
-            }
-            set
-            {
-                _serverPath = value;
-            }
-        }
-
-        public string FullPath
-        {
-            get
-            {
-                return _fullPath;
-            }
-            set
-            {
-                _fullPath = value;
-            }
-        }
-
+        /// <summary>
+        /// The original mapped path of the server.
+        /// </summary>
         public string OriginalPath
         {
             get
@@ -67,12 +60,27 @@ namespace Remapper
             set
             {
                 _originalPath = value;
+            }
+        }
+
+        /// <summary>
+        /// The original, full UNC path of the share.
+        /// </summary>
+        public string OriginalFullPath
+        {
+            get
+            {
+                return _originalFullPath;
+            }
+            set
+            {
+                _originalFullPath = value;
                 string s;
                 string p;
 
-                int spot = _originalPath.IndexOf('\\', 3);
-                s = _originalPath.Substring(2, spot - 2);
-                p = _originalPath.Substring(spot);
+                int spot = _originalFullPath.IndexOf('\\', 3);
+                s = _originalFullPath.Substring(2, spot - 2);
+                p = _originalFullPath.Substring(spot + 1);
                 _originalServer = s;
                 _originalPath = p;
 

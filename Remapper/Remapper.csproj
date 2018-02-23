@@ -46,6 +46,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerMapper.cs" />
     <Compile Include="ShareMapper.cs" />
+    <Compile Include="SharePath.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ServerMappings.txt" />

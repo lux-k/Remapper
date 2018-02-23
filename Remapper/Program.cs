@@ -16,13 +16,12 @@ namespace Remapper
             Logger.Log("Machine name: " + Environment.MachineName);
             Logger.Log("User name:" + Environment.UserName);
             Logger.Log("");
-            SharePath s = ShareMapper.Map;
             Logger.Log("Network drives:");
             foreach (NetworkDrive d in GetNetworkDrives())
             {
                 if (d.Server != null)
                 {
-                    Logger.Log("\t" + d.DriveLetter + " " + d.OriginalPath + " <-> " + s.MapPath(d.OriginalPath));
+                    Logger.Log("\t------------------------------------\n\tDrive: " + d.DriveLetter + "\n\tOriginal: " + d.OriginalPath + "\n\tMapped:" + ShareMapper.Map(d.OriginalPath) + "\n\t------------------------------------");
                 }
 
             }
@@ -39,11 +38,7 @@ namespace Remapper
             {
                 if (d.IsReady && d.DriveType == DriveType.Network)
                 {
-                    NetworkDrive drive = new NetworkDrive();
-                    drive.DriveLetter = d.Name;
-                    drive.OriginalPath = GetUNCPath(d.Name);
-
-                    a.Add(drive);
+                    a.Add(new NetworkDrive(d.Name, GetUNCPath(d.Name)));
                 }
             }
             return (NetworkDrive[])a.ToArray(typeof(NetworkDrive));
