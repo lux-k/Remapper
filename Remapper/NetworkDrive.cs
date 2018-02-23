@@ -22,7 +22,12 @@ namespace Remapper
             }
             set
             {
-                _driveLetter = value;
+                string s = value;
+                if (s.Contains("\\"))
+                {
+                    s = s.Substring(0, s.IndexOf("\\"));
+                }
+                _driveLetter = s;
             }
         }
 
@@ -83,7 +88,7 @@ namespace Remapper
                 p = _originalFullPath.Substring(spot + 1);
                 _originalServer = s;
                 _originalPath = p;
-
+                Console.WriteLine("Server is " + s);
                 _server = ServerMapper.NormalizeServerName(s);
             }
         }

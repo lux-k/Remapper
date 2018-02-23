@@ -90,7 +90,9 @@ namespace Remapper
                 newpath = lastmapped.Target;
             }
             else if (i == 0)
+            {
                 newpath = null;
+            }
             else
             {
                 newpath = current.Target + "\\" + String.Join("\\", parts, pathidx + 1, parts.Length - pathidx - 1);

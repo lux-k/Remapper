@@ -36,6 +36,9 @@ namespace Remapper
                     if (line.StartsWith("#"))
                         continue;
 
+                    if (line.Equals(""))
+                        continue;
+
                     string src = line;
 
                     line = tsr.ReadLine();
