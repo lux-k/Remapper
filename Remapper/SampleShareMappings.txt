@@ -1,0 +1,5 @@
+#source
+#destination
+#
+\\oldserver1.yourdomain.fun\old
+\\newserver1.yourdomain.fun\new\path

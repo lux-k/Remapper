@@ -1,0 +1,4 @@
+fqdn.of.your.server.domain.com
+	server1
+	ipaddress
+	etc
