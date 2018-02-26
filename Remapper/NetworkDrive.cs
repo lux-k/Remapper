@@ -6,9 +6,14 @@ namespace Remapper
     {
         private string _driveLetter, _server, _originalServer, _originalFullPath, _originalPath;
 
-        public NetworkDrive(string s, string path)
+        /// <summary>
+        /// Constructor to create a new network drive
+        /// </summary>
+        /// <param name="drive">Drive letter, e.g. D:\</param>
+        /// <param name="path">Full UNC path, e.g. \\server\path\to\file</param>
+        public NetworkDrive(string drive, string path)
         {
-            this.DriveLetter = s;
+            this.DriveLetter = drive;
             this.OriginalFullPath = path;
         }
         /// <summary>

@@ -12,6 +12,10 @@ namespace Remapper
     {
         // help from http://www.blackwasp.co.uk/MapDriveLetter.aspx
 
+        /// <summary>
+        /// Main entry point for the app.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             Logger.Log("----");
@@ -43,6 +47,11 @@ namespace Remapper
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Unmaps a drive
+        /// </summary>
+        /// <param name="d">Drive object to unmap</param>
+        /// <returns></returns>
         public static int Unmap(NetworkDrive d)
         {
             
@@ -51,13 +60,21 @@ namespace Remapper
             return (int)result;
         }
 
+        /// <summary>
+        /// Maps a network drive
+        /// </summary>
+        /// <param name="d">Drive Letter to map, e.g D:</param>
+        /// <param name="path">Full UNC path, e.g. \\server\path\folder</param>
+        /// <returns></returns>
         public static int Map(NetworkDrive d, string path)
         {
-            NETRESOURCE networkResource = new NETRESOURCE();
-            networkResource.dwType = RESOURCETYPE_DISK;
-            networkResource.lpLocalName = d.DriveLetter;
-            networkResource.lpRemoteName = path;
-            networkResource.lpProvider = null;
+            NETRESOURCE networkResource = new NETRESOURCE
+            {
+                dwType = RESOURCETYPE_DISK,
+                lpLocalName = d.DriveLetter,
+                lpRemoteName = path,
+                lpProvider = null
+            };
 
             uint result = WNetAddConnection2(ref networkResource, null, null, CONNECT_UPDATE_PROFILE);
             Logger.Log("\t\tMap " + d.DriveLetter + " to " + path+ "; result: " + TransResult(result));
@@ -65,6 +82,11 @@ namespace Remapper
             return (int)result;
         }
 
+        /// <summary>
+        /// Translates a result code from mapping/unmapping to a more useful string.
+        /// </summary>
+        /// <param name="res">Result from mapping/unmapping</param>
+        /// <returns></returns>
         public static string TransResult(uint res)
         {
             if (res == 0)
@@ -73,6 +95,11 @@ namespace Remapper
                 return res.ToString() + " (failure)";
         }
 
+        /// <summary>
+        /// Remaps a drive by first unmapping the old drive and then mapping the new path.
+        /// </summary>
+        /// <param name="d">Drive letter to map, e.g. D:</param>
+        /// <param name="s">Full UNC path to map, e.g. \\server\path\folder</param>
         public static void Remap(NetworkDrive d, string s)
         {
             Logger.Log("\t\tAttempting to remap " + d.DriveLetter + "...");
@@ -89,6 +116,10 @@ namespace Remapper
                 Logger.Log("\t\tUnmapping failed.");
         }
 
+        /// <summary>
+        /// Gets all the network drives on a machine
+        /// </summary>
+        /// <returns></returns>
         public static NetworkDrive[] GetNetworkDrives()
         {
             ArrayList a = new ArrayList();
