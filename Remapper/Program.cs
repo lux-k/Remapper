@@ -14,40 +14,45 @@ namespace Remapper
 
         static void Main(string[] args)
         {
+            Logger.Log("----");
             Logger.Log("Program log start: " + DateTime.Now);
             Logger.Log("Machine name: " + Environment.MachineName);
-            Logger.Log("User name:" + Environment.UserName);
+            Logger.Log("User name: " + Environment.UserName);
             Logger.Log("");
             Logger.Log("Network drives:");
+            int count = 0;
             foreach (NetworkDrive d in GetNetworkDrives())
             {
                 if (d.OriginalServer != null)
                 {
                     string newpath = ShareMapper.Map(d.OriginalFullPath);
-                    Logger.Log("\t------------------------------------\n\tDrive: " + d.DriveLetter + "\n\tOriginal: " + d.OriginalFullPath + "\n\tMapped:" + newpath );
+                    if (count == 0)
+                        Logger.Log("\t------------------------------------");
+                    Logger.Log("\tDrive: " + d.DriveLetter + "\n\tOriginal: " + d.OriginalFullPath + "\n\tMapped: " + newpath );
                     if (!newpath.ToLower().Equals(d.OriginalFullPath.ToLower()))
                     {
                         Remap(d, newpath);
                     }
                     Logger.Log("\t------------------------------------");
+                    count++;
                 }
 
             }
             Logger.Log("Run complete: " + DateTime.Now);
+            Logger.Log("----\n");
             Console.ReadLine();
         }
 
         public static int Unmap(NetworkDrive d)
         {
-            Logger.Log("\t\tUnmap " + d.DriveLetter);
+            
             uint result = WNetCancelConnection2(d.DriveLetter, CONNECT_UPDATE_PROFILE, true);
-            Logger.Log("\t\tUnmap result: " + result.ToString());
+            Logger.Log("\t\tUnmap " + d.DriveLetter + "; result: " + TransResult(result));
             return (int)result;
         }
 
         public static int Map(NetworkDrive d, string path)
         {
-            Logger.Log("\t\tMap " + d.DriveLetter + " to " + path);
             NETRESOURCE networkResource = new NETRESOURCE();
             networkResource.dwType = RESOURCETYPE_DISK;
             networkResource.lpLocalName = d.DriveLetter;
@@ -55,18 +60,30 @@ namespace Remapper
             networkResource.lpProvider = null;
 
             uint result = WNetAddConnection2(ref networkResource, null, null, CONNECT_UPDATE_PROFILE);
-            Logger.Log("\t\tMap result: " + result);
+            Logger.Log("\t\tMap " + d.DriveLetter + " to " + path+ "; result: " + TransResult(result));
+
             return (int)result;
+        }
+
+        public static string TransResult(uint res)
+        {
+            if (res == 0)
+                return "0 (success)";
+            else
+                return res.ToString() + " (failure)";
         }
 
         public static void Remap(NetworkDrive d, string s)
         {
             Logger.Log("\t\tAttempting to remap " + d.DriveLetter + "...");
-            int result = 0;
-            result = Unmap(d);
-            if (result == 0)
+            if (Unmap(d) == 0)
             {
-                result = Map(d, s);
+                if (Map(d, s) != 0)
+                {
+                    Logger.Log("\t\tMapping failed; reverting to previous mapping...");
+                    Map(d, d.OriginalFullPath);
+                }
+
             }
             else
                 Logger.Log("\t\tUnmapping failed.");
@@ -81,7 +98,6 @@ namespace Remapper
             {
                 if (d.IsReady && d.DriveType == DriveType.Network)
                 {
-                    Console.WriteLine(d.Name);
                     a.Add(new NetworkDrive(d.Name, GetUNCPath(d.Name)));
                 }
             }
@@ -131,6 +147,7 @@ namespace Remapper
         /// <returns>A UNC path. If a network drive letter is specified, the
         /// drive letter is converted to a UNC or network path. If the 
         /// originalPath cannot be converted, it is returned unchanged.</returns>
+        /// from https://gist.github.com/ambyte/01664dc7ee576f69042c
         public static string GetUNCPath(string originalPath)
         {
             StringBuilder sb = new StringBuilder(512);

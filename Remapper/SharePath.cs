@@ -42,15 +42,14 @@ namespace Remapper
         {
             SharePath curr = this;
 
-            string[] parts = src.Split('\\');
+            string[] parts = src.ToLower().Split('\\');
 
             foreach (string s in parts)
             {
-                string t = s.ToLower();
-                if (!curr.SubPaths.ContainsKey(t))
-                    curr.SubPaths[t] = new SharePath();
+                if (!curr.SubPaths.ContainsKey(s))
+                    curr.SubPaths[s] = new SharePath();
 
-                curr = curr.SubPaths[t];
+                curr = curr.SubPaths[s];
             }
             curr.Target = dest;
             return curr;
@@ -61,7 +60,9 @@ namespace Remapper
             if (src == null)
                 return null;
 
-            src = src.Substring(1).ToLower();
+            src = src.Substring(1);
+            string[] origparts = src.Split('\\');
+            src = src.ToLower();
             string[] parts = src.Split('\\');
 
             SharePath lastmapped = null;
@@ -95,7 +96,7 @@ namespace Remapper
             }
             else
             {
-                newpath = current.Target + "\\" + String.Join("\\", parts, pathidx + 1, parts.Length - pathidx - 1);
+                newpath = current.Target + "\\" + String.Join("\\", origparts, pathidx + 1, parts.Length - pathidx - 1);
             }
             return newpath;
         }

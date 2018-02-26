@@ -88,7 +88,6 @@ namespace Remapper
                 p = _originalFullPath.Substring(spot + 1);
                 _originalServer = s;
                 _originalPath = p;
-                Console.WriteLine("Server is " + s);
                 _server = ServerMapper.NormalizeServerName(s);
             }
         }
