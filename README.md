@@ -4,7 +4,7 @@ The program was written to satisfy this use case:
   * users have many different names for servers (dns, FQDN, ip, shortname, etc).
   * we are trying to migrate that mess to a DFS solution
   * we didn't want to have to touch each user's computer
-  * we want users using non-DFS paths for shares that are available via DFS
+  * we want users using non-DFS paths for shares to use the DFS path instead
   
 The solution was this program. It has two map files: servers and shares.
 
