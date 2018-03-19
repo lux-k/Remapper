@@ -29,7 +29,7 @@ namespace Remapper
             {
                 if (d.OriginalServer != null)
                 {
-                    string newpath = ShareMapper.Map(d.OriginalFullPath);
+                    string newpath = ShareMapper.Map(d.NormalizedFullPath);
                     if (count == 0)
                         Logger.Log("\t------------------------------------");
                     Logger.Log("\tDrive: " + d.DriveLetter + "\n\tOriginal: " + d.OriginalFullPath + "\n\tMapped: " + newpath );

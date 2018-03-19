@@ -72,7 +72,7 @@ namespace Remapper
                     }
                 }
             }
-            return null;
+            return input;
         }
     }
 }

@@ -96,5 +96,13 @@ namespace Remapper
                 _server = ServerMapper.NormalizeServerName(s);
             }
         }
+
+        public string NormalizedFullPath
+         {
+            get
+            {
+                return "\\\\" + _server + "\\" + _originalPath;
+            }
+        }
     }
 }
